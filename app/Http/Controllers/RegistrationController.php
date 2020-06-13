@@ -12,18 +12,31 @@ class RegistrationController extends Controller
         return view('registration.create');
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        ini_set("memory_limit", "-1");
         $this->validate(request(), [
+            'mc_company_name' => 'required', 
+            'mc_grp_name' => 'required',
+            'mc_company_profile' => 'required',
+            'company_type' => 'required',
+            'license_reg_date' => 'required',
+            'license_expiry_date' => 'required',
+            'is_existing_mc' => 'required',
+            'desgn_auth' => 'required',
+            'web_url_payment' => 'required',
+            'prod_to_sell' => 'required',
+            'delivery_mode' => 'required',
+            'bank_name' => 'required',
+            'office_fax' => 'required',
+            'office_email' => 'required',
+            'office_phone' => 'required',
+            'office_addr' => 'required',
             'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required'
+            'person_phone' => 'required',
+            'email' => 'required|email|unique:users,email',
         ]);
-        
-        $user = User::create(request(['name', 'email', 'password']));
-        
-        auth()->login($user);
-        
-        return redirect()->to('/');
+        User::create($request->all());
+        return redirect('/')->with('message', 'Your request has been successfully submitted.');
     }
 }

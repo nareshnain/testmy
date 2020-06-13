@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Snippet - Bootsnipp.com</title>
+    <title>My Test</title>
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <style>img {width:100%;}</style>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -33,6 +33,16 @@
         </div>
         <div class="col-md-8 py-5 border">
             <h4 class="pb-4">Please fill with your details</h4>
+            @if ($errors->any())
+            <div class="alert alert-danger">
+            <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+            </ul>
+            </div>
+            @endif
+
             <form method="POST" action="/register">
             {{ csrf_field() }}
                 <div class="form-row">
@@ -127,7 +137,7 @@
                     
                     <div class="form-group col-md-6 col-sm-6">
                         <label for="office_phone">Registered Office Phone Number*</label>
-                        <input type="text" class="form-control input-sm" id="office_phone" name="office_phone" placeholder="" required>
+                        <input type="phone" class="form-control input-sm" id="office_phone" name="office_phone" placeholder="" required>
                     </div>
                     <div class="form-group col-md-12">
                     <label for="office_addr">Registered Office Address*</label>
@@ -138,15 +148,15 @@
                 <div class="form-row">
                     <div class="form-group col-md-6 ">
                                 <label for="person_name">Contact Person Name*</label>
-                                <input type="text" class="form-control input-sm" id="person_name" name="person_name" placeholder="" required>
+                                <input type="text" class="form-control input-sm" id="person_name" name="name" placeholder="" required>
                             </div>
                                 <div class="form-group col-md-6">
                             <label for="person_phone">Contact Person Phone*</label>
-                            <input type="text" class="form-control input-sm" id="person_phone" name="person_phone" placeholder="" required>
+                            <input type="phone" class="form-control input-sm" id="person_phone" name="person_phone" placeholder="" required>
                         </div>
                             <div class="form-group col-md-6">
                             <label for="person_email">Contact Person Email*</label>
-                            <input type="email" class="form-control input-sm" id="person_email" name="person_email" placeholder="" required>
+                            <input type="email" class="form-control input-sm" id="person_email" name="email" placeholder="" required>
                         </div>
                         
                 </div>
