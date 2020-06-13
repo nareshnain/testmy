@@ -35,6 +35,12 @@ class RegistrationController extends Controller
             'name' => 'required',
             'person_phone' => 'required',
             'email' => 'required|email|unique:users,email',
+            'card_accepted' => 'required',
+            'payment_type' => 'required',
+            'currency' => 'required',
+            'anticipated_live_date' => 'required',
+            'individual_transaction_amount' => 'required',
+            'annual_expected' => 'required',
         ]);
         User::create($request->all());
         return redirect('/')->with('message', 'Your request has been successfully submitted.');

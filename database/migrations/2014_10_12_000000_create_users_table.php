@@ -36,6 +36,12 @@ class CreateUsersTable extends Migration
             $table->string('office_phone')->nullable();
             $table->string('office_addr')->nullable();
             $table->string('person_phone')->nullable();
+            $table->integer('card_accepted')->nullable();
+            $table->integer('payment_type')->nullable();
+            $table->string('currency')->nullable();
+            $table->string('anticipated_live_date')->nullable();
+            $table->bigInteger('individual_transaction_amount')->nullable();
+            $table->bigInteger('annual_expected')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

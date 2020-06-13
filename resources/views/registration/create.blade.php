@@ -137,7 +137,8 @@
                     
                     <div class="form-group col-md-6 col-sm-6">
                         <label for="office_phone">Registered Office Phone Number*</label>
-                        <input type="phone" class="form-control input-sm" id="office_phone" name="office_phone" placeholder="" required>
+                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control input-sm" id="office_phone" name="office_phone" placeholder="" required>
+                        <small>Format: xxx-xxx-xxxx</small>
                     </div>
                     <div class="form-group col-md-12">
                     <label for="office_addr">Registered Office Address*</label>
@@ -152,7 +153,8 @@
                             </div>
                                 <div class="form-group col-md-6">
                             <label for="person_phone">Contact Person Phone*</label>
-                            <input type="phone" class="form-control input-sm" id="person_phone" name="person_phone" placeholder="" required>
+                            <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control input-sm" id="person_phone" name="person_phone" placeholder="" required>
+                            <small>Format: xxx-xxx-xxxx</small>
                         </div>
                             <div class="form-group col-md-6">
                             <label for="person_email">Contact Person Email*</label>
@@ -161,17 +163,50 @@
                         
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <div class="form-group">
-                            <!--<div class="form-check">-->
-                            <!--  <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>-->
-                            <!--  <label class="form-check-label" for="invalidCheck2">-->
-                            <!--    <small>By clicking Submit, you agree to our Terms & Conditions, Visitor Agreement and Privacy Policy.</small>-->
-                            <!--  </label>-->
-                            <!--</div>-->
+                    <div class="form-group col-md-6 ">
+                    <label for="person_name">Card to be Accepted in </label>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                            <input type="radio" checked value=1 class="form-check-input" name="card_accepted">Debit Card
+                            </label>
                             </div>
-                
-                        </div>
+                            <div class="form-check">
+                            <label class="form-check-label">
+                            <input type="radio" value=2 class="form-check-input" name="card_accepted">Credit Card
+                            </label>
+                         </div>
+                    </div>
+                    <div class="form-group col-md-6 ">
+                    <label for="person_name">Payment Types to be Accepted</label>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                            <input type="radio" checked value=1 class="form-check-input" name="payment_type">Cash
+                            </label>
+                            </div>
+                            <div class="form-check">
+                            <label class="form-check-label">
+                            <input type="radio" value=2 class="form-check-input" name="payment_type">Card
+                            </label>
+                         </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6 ">
+                        <label for="person_name">Transaction Currency*</label>
+                        <input type="text" class="form-control input-sm" id="currency" name="currency" placeholder="" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="license_expiry_date">Anticipated Live Date*</label>
+                        <input type="date" class="form-control input-sm" id="anticipated_live_date" name="anticipated_live_date" placeholder="" required>
+                    </div>
+                    <div class="form-group col-md-6 ">
+                        <label for="person_name">Maximum Individual Transaction Amount*</label>
+                        <input type="number" class="form-control input-sm" id="individual_transaction_amount" name="individual_transaction_amount" placeholder="" required>
+                    </div>
+                    <div class="form-group col-md-6 ">
+                        <label for="person_name">Annual Expected eCommerce Volume*</label>
+                        <input type="number" class="form-control input-sm" id="annual_expected" name="annual_expected" placeholder="" required>
+                    </div>
                 </div>
                 <div class="form-row">
                     <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
