@@ -21,6 +21,7 @@ class User extends Authenticatable
         , 'web_url_payment', 'prod_to_sell', 'delivery_mode', 'bank_name', 'office_fax', 'office_email'
         , 'office_phone', 'office_addr', 'person_phone', 'card_accepted', 'payment_type', 'currency'
         , 'anticipated_live_date', 'individual_transaction_amount', 'annual_expected'
+        , 'partners', 'cr_copy', 'owners_personal_id', 'moa_doc', 'contract_doc'
     ];
 
     /**

@@ -65,15 +65,17 @@
                     
                     <select class="form-control input-sm" id="company_type" name="company_type" required>
                 <option>-- Select Company Type --</option>
+                        <option value="3">Individual Establishment</option>
+                        <option value="4">Local only</option>
                         <option value="1">WLL</option>
                         <option value="2">SPC</option>
-                    </select>
+                </select>
 					
                 </div>
                 </div>
 				<div class="form-row">
-				<div class="form-group col-md-6">
-                    <label for="company_type">How many partners? *</label>
+				<div class="form-group col-md-6" id="partners-count">
+                    <label for="partners">How many partners? *</label>
 				<select class="form-control input-sm" id="partners" name="partners" required>
                 <option>-- How many partners? --</option>
                         <option value="1">1</option>
@@ -88,11 +90,11 @@
 						<option value="10">10+</option>
                     </select>
 					</div>
-					 <div class="form-group col-md-6">
-                    <label for="company_type">Delivery Mode *</label>
+					 <div class="form-group col-md-6" id="delivery-mode-box">
+                    <label for="delivery_mode">Delivery Mode *</label>
                     
-                    <select class="form-control input-sm" id="company_type" name="company_type" required>
-                <option>-- Delivery Mode --</option>
+                <select class="form-control input-sm" id="delivery_mode" name="delivery_mode" required>
+                        <option>-- Delivery Mode --</option>
                         <option value="1">Aramex</option>
                         <option value="2">DHL</option>
 						 <option value="3">UPS</option>
@@ -102,8 +104,7 @@
 						   <option value="7">Fetchr</option>
 						   <option value="8">Postaplus</option>
 						   <option value="9">other</option>
-                    </select>
-					
+                </select>
                 </div>
 				</div>
                 <div class="form-row">
@@ -199,29 +200,31 @@
                         
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6 ">
+                    <div class="form-group col-md-6 " id="card-accepted-box">
                     <label for="person_name">Card to be Accepted in </label>
                         <div class="form-check">
                             <label class="form-check-label">
-                            <input type="checkbox"  value=1 class="form-check-input" name="card_accepted" required>Debit Card
+                            <input type="checkbox"  value=1 class="form-check-input cls-card-accepted" name="" >Debit Card
                             </label>
                             </div>
                             <div class="form-check">
                             <label class="form-check-label">
-                            <input type="checkbox" value=2 class="form-check-input" name="card_accepted" required>Credit Card
+                            <input type="checkbox" value=2 class="form-check-input cls-card-accepted" name="" >Credit Card
+                            <input id='card_accepted' name="card_accepted" type='hidden' required>
                             </label>
                          </div>
                     </div>
-                    <div class="form-group col-md-6 ">
+                    <div class="form-group col-md-6 " id="payment-type-box">
                     <label for="person_name">Payment Types to be Accepted</label>
                         <div class="form-check">
                             <label class="form-check-label">
-                            <input type="checkbox"  value=1 class="form-check-input" name="payment_type" required>Cash
+                            <input type="checkbox"  value=1 class="form-check-input cls-payment-type" name="" >Cash
                             </label> 
 							</div>
                             <div class="form-check">							
                             <label class="form-check-label">
-                            <input type="checkbox" value=2 class="form-check-input" name="payment_type" required>Card
+                            <input type="checkbox" value=2 class="form-check-input cls-payment-type" name="" >Card
+                            <input id='payment_type' name="payment_type" type='hidden' required>
                             </label>
                          </div>
                     </div>
@@ -245,7 +248,11 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
+                <input id='cr_copy' name="cr_copy" type='hidden'>
+                <input id='owners_personal_id' name="owners_personal_id" type='hidden'>
+                <input id='moa_doc' name="moa_doc" type='hidden'>
+                <input id='contract_doc' name="contract_doc" type='hidden'>
+                <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
@@ -256,14 +263,64 @@
 <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-
 <script>
+var companyType = {
+    individual: 3,
+    local: 4,
+    wll: 1,
+    spc: 2
+};
 $("#myForm").validate({
   submitHandler: function(form) {
     // do other things for a valid form
     form.submit();
   }
 });
+$(function() {
+    $('#delivery-mode-box').hide();
+    $('#partners-count').hide(); 
+    $('#company_type').change(function(){
+        var companyTypeValue = $('#company_type').val();
+        if(companyTypeValue == companyType.wll) {
+            $('#partners-count').show(); 
+        } else {
+            $('#partners-count').hide(); 
+        }
+        if(companyTypeValue == companyType.spc) {
+            $('#delivery-mode-box').show();
+        } else {
+            $('#delivery-mode-box').hide(); 
+        } 
+    });
+    $('.cls-card-accepted').change(function() {
+        onClickCardAccepted();
+    });
+    $('.cls-payment-type').change(function() {
+        onClickPaymentType();
+    });
+});
+function onClickCardAccepted() {
+     var selectedCheckBoxesValue = '';
+    $('#card-accepted-box input:checked').each(function (i, selected) {
+    if (selectedCheckBoxesValue.length == 0) {
+        selectedCheckBoxesValue += $(selected).val();
+    }
+    else {
+        selectedCheckBoxesValue += ',' + $(selected).val();
+    }});                                                        
+    $('#card_accepted').val(selectedCheckBoxesValue);
+}
+function onClickPaymentType() {
+     var selectedValue = '';
+    $('#payment-type-box input:checked').each(function (i, selected) {
+    if (selectedValue.length == 0) {
+        selectedValue += $(selected).val();
+    }
+    else {
+        selectedValue += ',' + $(selected).val();
+    }});                                                        
+    $('#payment_type').val(selectedValue);
+}
 </script>
 <style>
 .error{
