@@ -43,7 +43,7 @@
             </div>
             @endif
 
-            <form method="POST" action="/register">
+            <form method="POST" action="/register" id="myForm">
             {{ csrf_field() }}
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -66,10 +66,46 @@
                     <select class="form-control input-sm" id="company_type" name="company_type" required>
                 <option>-- Select Company Type --</option>
                         <option value="1">WLL</option>
-                        <option value="2">Other</option>
+                        <option value="2">SPC</option>
                     </select>
+					
                 </div>
                 </div>
+				<div class="form-row">
+				<div class="form-group col-md-6">
+                    <label for="company_type">How many partners? *</label>
+				<select class="form-control input-sm" id="partners" name="partners" required>
+                <option>-- How many partners? --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10+</option>
+                    </select>
+					</div>
+					 <div class="form-group col-md-6">
+                    <label for="company_type">Delivery Mode *</label>
+                    
+                    <select class="form-control input-sm" id="company_type" name="company_type" required>
+                <option>-- Delivery Mode --</option>
+                        <option value="1">Aramex</option>
+                        <option value="2">DHL</option>
+						 <option value="3">UPS</option>
+						  <option value="4">Local Delivery</option>
+						   <option value="5">UBEX</option>
+						   <option value="6">Parcel</option>
+						   <option value="7">Fetchr</option>
+						   <option value="8">Postaplus</option>
+						   <option value="9">other</option>
+                    </select>
+					
+                </div>
+				</div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                     <label for="license_reg_date">License Registration Date*</label>
@@ -167,12 +203,12 @@
                     <label for="person_name">Card to be Accepted in </label>
                         <div class="form-check">
                             <label class="form-check-label">
-                            <input type="radio" checked value=1 class="form-check-input" name="card_accepted">Debit Card
+                            <input type="checkbox"  value=1 class="form-check-input" name="card_accepted" required>Debit Card
                             </label>
                             </div>
                             <div class="form-check">
                             <label class="form-check-label">
-                            <input type="radio" value=2 class="form-check-input" name="card_accepted">Credit Card
+                            <input type="checkbox" value=2 class="form-check-input" name="card_accepted" required>Credit Card
                             </label>
                          </div>
                     </div>
@@ -180,12 +216,12 @@
                     <label for="person_name">Payment Types to be Accepted</label>
                         <div class="form-check">
                             <label class="form-check-label">
-                            <input type="radio" checked value=1 class="form-check-input" name="payment_type">Cash
-                            </label>
-                            </div>
-                            <div class="form-check">
+                            <input type="checkbox"  value=1 class="form-check-input" name="payment_type" required>Cash
+                            </label> 
+							</div>
+                            <div class="form-check">							
                             <label class="form-check-label">
-                            <input type="radio" value=2 class="form-check-input" name="payment_type">Card
+                            <input type="checkbox" value=2 class="form-check-input" name="payment_type" required>Card
                             </label>
                          </div>
                     </div>
@@ -217,6 +253,27 @@
 </div>
 </section>
 </body>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+<script>
+$("#myForm").validate({
+  submitHandler: function(form) {
+    // do other things for a valid form
+    form.submit();
+  }
+});
+</script>
+<style>
+.error{
+	border-color:#dc3545;
+}
+label.error{
+	color: #dc3545;
+	float:right;
+}
+</style>
 </html>
 
 
