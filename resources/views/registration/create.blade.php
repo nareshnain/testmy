@@ -8,7 +8,14 @@
     <style>img {width:100%;}</style>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
+    <script type="text/javascript">
+        AWS.config.update({
+            accessKeyId : 'ACCESS_KEY',
+            secretAccessKey : 'SECRET_KEY'
+        });
+        AWS.config.region = 'AWS_REGION';
+    </script>
 </head>
 <body>
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -43,7 +50,7 @@
             </div>
             @endif
 
-            <form method="POST" action="/register" id="myForm">
+            <form method="POST" action="/register" id="myForm" enctype="multipart/form-data">
             {{ csrf_field() }}
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -284,6 +291,7 @@ var companyType = {
     wll: 1,
     spc: 2
 };
+var bucket = new AWS.S3({params: {Bucket: 'document'}});
 $("#myForm").validate({
   submitHandler: function(form) {
     // do other things for a valid form
@@ -323,6 +331,25 @@ $(function() {
     });
     $('.cls-payment-type').change(function() {
         onClickPaymentType();
+    });
+    $('#cr-copy').change(function(e) { 
+        var file = e.target.files[0];
+        if (file) {
+            var params = {Key: file.name, ContentType: file.type, Body: file};
+            bucket.upload(params).on('httpUploadProgress', function(evt) {
+            // console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total)+'%');
+            }).send(function(err, data) {
+            });
+        }
+    });
+    $('#owners-personal-id').change(function(e) { 
+        console.log(e.target.files);
+    });
+    $('#moa-doc').change(function(e) { 
+        //
+    });
+    $('#contract-doc').change(function(e) { 
+        //
     });
 });
 function onClickCardAccepted() {
