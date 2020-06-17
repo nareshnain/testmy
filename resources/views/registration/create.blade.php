@@ -73,6 +73,20 @@
 					
                 </div>
                 </div>
+                <div class="form-row" id="document-list">
+                    <div class="form-group col-md-6" id="doc-part-one">
+                        <label for="partners">CR copy *</label>
+                        <input class="form-control input-sm" type="file" required id="cr-copy" name="copy_cr">
+                        <label for="partners">Owners Personal Id*</label>
+                        <input class="form-control input-sm" type="file" multiple="multiple"  name="personal_id" id="owners-personal-id" required>
+                    </div>
+                    <div class="form-group col-md-6" id="doc-part-two">
+                        <label for="partners">MOA doc *</label>
+                        <input  class="form-control input-sm" type="file" required id="moa-doc"  name="doc_moa">
+                        <label for="partners">Contract *</label>
+                        <input class="form-control input-sm" type="file" id="contract-doc" name="doc_contract" required>
+                    </div>
+                </div>
 				<div class="form-row">
 				<div class="form-group col-md-6" id="partners-count">
                     <label for="partners">How many partners? *</label>
@@ -278,7 +292,9 @@ $("#myForm").validate({
 });
 $(function() {
     $('#delivery-mode-box').hide();
-    $('#partners-count').hide(); 
+    $('#partners-count').hide();
+    $('#document-list').hide();
+    $('#doc-part-two').hide();
     $('#company_type').change(function(){
         var companyTypeValue = $('#company_type').val();
         if(companyTypeValue == companyType.wll) {
@@ -291,6 +307,16 @@ $(function() {
         } else {
             $('#delivery-mode-box').hide(); 
         } 
+        if(companyTypeValue != companyType.local) {
+            $('#document-list').show();
+        } else {
+            $('#document-list').hide();
+        }
+        if(companyTypeValue == companyType.individual) {
+            $('#doc-part-two').hide();
+        } else {
+            $('#doc-part-two').show();
+        }
     });
     $('.cls-card-accepted').change(function() {
         onClickCardAccepted();
