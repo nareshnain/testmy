@@ -8,14 +8,7 @@
     <style>img {width:100%;}</style>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
-    <script type="text/javascript">
-        AWS.config.update({
-            accessKeyId : 'ACCESS_KEY',
-            secretAccessKey : 'SECRET_KEY'
-        });
-        AWS.config.region = 'AWS_REGION';
-    </script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.207.0.min.js"></script>
 </head>
 <body>
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -93,38 +86,39 @@
                         <label for="partners">Contract *</label>
                         <input class="form-control input-sm" type="file" id="contract-doc" name="doc_contract" required>
                     </div>
+                    <progress id="file-upload-progress" value="0" max="100"></progress>
                 </div>
 				<div class="form-row">
 				<div class="form-group col-md-6" id="partners-count">
                     <label for="partners">How many partners? *</label>
 				<select class="form-control input-sm" id="partners" name="partners" required>
-                <option>-- How many partners? --</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10+</option>
+                <option value=0>-- How many partners? --</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+						<option value=3>3</option>
+						<option value=4>4</option>
+						<option value=5>5</option>
+						<option value=6>6</option>
+						<option value=7>7</option>
+						<option value=8>8</option>
+						<option value=9>9</option>
+						<option value=10>10+</option>
                     </select>
 					</div>
 					 <div class="form-group col-md-6" id="delivery-mode-box">
                     <label for="delivery_mode">Delivery Mode *</label>
                     
                 <select class="form-control input-sm" id="delivery_mode" name="delivery_mode" required>
-                        <option>-- Delivery Mode --</option>
-                        <option value="1">Aramex</option>
-                        <option value="2">DHL</option>
-						 <option value="3">UPS</option>
-						  <option value="4">Local Delivery</option>
-						   <option value="5">UBEX</option>
-						   <option value="6">Parcel</option>
-						   <option value="7">Fetchr</option>
-						   <option value="8">Postaplus</option>
-						   <option value="9">other</option>
+                        <option value=0>-- Delivery Mode --</option>
+                        <option value=1>Aramex</option>
+                        <option value=2>DHL</option>
+						 <option value=3>UPS</option>
+						  <option value=4>Local Delivery</option>
+						   <option value=5>UBEX</option>
+						   <option value=6>Parcel</option>
+						   <option value=7>Fetchr</option>
+						   <option value=8>Postaplus</option>
+						   <option value=9>other</option>
                 </select>
                 </div>
 				</div>
@@ -276,6 +270,10 @@
                 <button style="cursor:pointer" type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
+            <input type="hidden" id="AWS_ACCESS_KEY" value="{{ env('AWS_ACCESS_KEY_ID') }}">
+            <input type="hidden" id="AWS_SECRET_KEY" value="{{ env('AWS_SECRET_ACCESS_KEY') }}">
+            <input type="hidden" id="AWS_REGION" value="{{ env('AWS_DEFAULT_REGION') }}">
+            <input type="hidden" id="bucketName" value="{{ env('AWS_BUCKET') }}">
         </div>
     </div>
 </div>
@@ -285,13 +283,86 @@
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script>
+AWS.config.update({
+    accessKeyId: $('#AWS_ACCESS_KEY').val(),
+    secretAccessKey: $('#AWS_SECRET_KEY').val(),
+    region: $('#AWS_REGION').val()
+});
+var bucketName = $('#bucketName').val();
+var fileToBeUpload = '';
+var filePath = 'documents/';
+var bucket = new AWS.S3({
+    params: {Bucket: bucketName}
+});
+hideUploadProgress();
+function showUploadProgress() {
+    $('#file-upload-progress').show();
+}
+function hideUploadProgress() {
+    $('#file-upload-progress').hide();
+}
+function uploadSingleFile (fileToBeUpload, eleId) {
+    if (fileToBeUpload) {
+        showUploadProgress();
+        var params = {
+            Key: filePath,
+            ContentType: fileToBeUpload.type,
+            Body: fileToBeUpload,
+            ContentDisposition: 'attachment' // if you want to enable file download via public url.
+        };
+
+        /* turn off the timeout (Optional) */
+        AWS.config.httpOptions.timeout = 0;
+        // upload file
+        bucket.upload(params).on('httpUploadProgress', function(evt) {
+            var uploaded = Math.round(evt.loaded / evt.total * 100);
+            $('#file-upload-progress').val(uploaded);
+            }).send(function(err, data) {
+                if (err){
+                    // an error occurred, handle the error
+                    console.log(err, err.stack);
+                    return;
+                }
+                var fileUrl = data.Location;
+                console.log('File URL:', fileUrl);
+                hideUploadProgress();
+                var existingFieldValue = $('#' + eleId).val();
+                if (existingFieldValue.length == 0) {
+                    existingFieldValue += fileUrl;
+                }
+                else {
+                    existingFieldValue += ',' + fileUrl;
+                };
+                $('#' + eleId).val(existingFieldValue);
+            });
+    }
+}
+$(function() {
+    $('#owners-personal-id').change(function(e) {
+        for(var i=0;i<e.target.files.length;i++) {
+            var fileToBeUpload = e.target.files[i];
+            uploadSingleFile(fileToBeUpload, 'owners_personal_id');
+        }
+    });
+    $('#moa-doc').change(function(e) { 
+        var fileToBeUpload = e.target.files[0];
+        uploadSingleFile(fileToBeUpload, 'moa_doc');
+    });
+    $('#contract-doc').change(function(e) { 
+        var fileToBeUpload = e.target.files[0];
+        uploadSingleFile(fileToBeUpload, 'contract_doc');
+    });
+    $('#cr-copy').change(function(e) { 
+        var fileToBeUpload = e.target.files[0];
+        uploadSingleFile(fileToBeUpload, 'cr_copy');
+    });  
+});
 var companyType = {
     individual: 3,
     local: 4,
     wll: 1,
     spc: 2
 };
-var bucket = new AWS.S3({params: {Bucket: 'document'}});
 $("#myForm").validate({
   submitHandler: function(form) {
     // do other things for a valid form
@@ -332,25 +403,6 @@ $(function() {
     $('.cls-payment-type').change(function() {
         onClickPaymentType();
     });
-    $('#cr-copy').change(function(e) { 
-        var file = e.target.files[0];
-        if (file) {
-            var params = {Key: file.name, ContentType: file.type, Body: file};
-            bucket.upload(params).on('httpUploadProgress', function(evt) {
-            // console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total)+'%');
-            }).send(function(err, data) {
-            });
-        }
-    });
-    $('#owners-personal-id').change(function(e) { 
-        console.log(e.target.files);
-    });
-    $('#moa-doc').change(function(e) { 
-        //
-    });
-    $('#contract-doc').change(function(e) { 
-        //
-    });
 });
 function onClickCardAccepted() {
      var selectedCheckBoxesValue = '';
@@ -382,6 +434,9 @@ function onClickPaymentType() {
 label.error{
 	color: #dc3545;
 	float:right;
+}
+#file-upload-progress {
+    width: 100%
 }
 </style>
 </html>
